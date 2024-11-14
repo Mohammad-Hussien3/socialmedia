@@ -10,6 +10,7 @@ from rest_framework_simplejwt.serializers import TokenRefreshSerializer
 from rest_framework_simplejwt.tokens import RefreshToken
 from rest_framework.views import Response, status
 from django.contrib.auth import authenticate
+from rest_framework.pagination import PageNumberPagination
 # Create your views here.
 
 def check_keys(expected_keys, received_keys):
@@ -59,10 +60,17 @@ class LogIn(APIView):
         return Response({"message": "Invalid credentials"}, status=status.HTTP_401_UNAUTHORIZED)
     
 
+class CustomPageNumberPagination(PageNumberPagination):
+    page_size = 5
+    page_size_query_param = 'page_size'
+    max_page_size = 10
+
+
 class GetUsers(generics.ListAPIView):
     queryset = User.objects.all()
     serializer_class = UserSerializer
     permission_classes = [IsAdminUser]
+    pagination_class = CustomPageNumberPagination
 
 
 class FollowUser(APIView):
