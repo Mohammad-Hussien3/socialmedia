@@ -2,3 +2,5 @@ socialMedia/__pycache__/
 usermanagement/__pycache__/
 usermanagement/migrations/__pycache__/
 db.sqlite3
+post/__pycache__/
+post/migrations/__pycache__/

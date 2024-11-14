@@ -1,5 +1,6 @@
 from django.db import models
 from django.contrib.auth.models import User
+from post.models import Post
 # Create your models here.
 
 class Profile(models.Model):
@@ -7,6 +8,7 @@ class Profile(models.Model):
     bio = models.CharField(max_length=100, default='i am busy my brother')
     profile_image = models.ImageField(upload_to='photos/', blank=True)
     followers = models.ManyToManyField('self', related_name='following', symmetrical=False, blank=True)
+    posts = models.ForeignKey(Post, on_delete=models.CASCADE, null=True)
 
     def __str__(self):
         return f'{self.user.username} {self.user.id}'
