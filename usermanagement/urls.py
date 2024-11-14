@@ -9,5 +9,5 @@ urlpatterns = [
     path('login/', views.LogIn.as_view(), name='logIn'),
     path('getusers/', views.GetUsers().as_view(), name='getUsers'),
     path('follow/<int:userId>/<int:userToFollowId>/', views.FollowUser.as_view(), name='followUser'),
-    path('unfollow/<int:userId>/<int:userNotToFollowId>/', views.UnfollowUser.as_view(), name='unfollowUser'),
+    path('unfollow/<int:userId>/<int:userToUnfollowId>/', views.UnfollowUser.as_view(), name='unfollowUser'),
 ]

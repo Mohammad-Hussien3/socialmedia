@@ -1,7 +1,7 @@
 from rest_framework import generics
 from rest_framework.views import Response, status, APIView
 from .models import Post
-from .serializers import PostSerializer, CommentSerializer
+from .serializers import PostSerializer, CommentSerializer, MentionSerilizer, ReactionSerializer
 from rest_framework.permissions import IsAuthenticated
 
 # Create your views here.
@@ -27,3 +27,15 @@ class AddComment(generics.CreateAPIView):
 
     permission_classes = [IsAuthenticated]
     serializer_class = CommentSerializer
+
+
+class CreateMention(generics.CreateAPIView):
+
+    permission_classes = [IsAuthenticated]
+    serializer_class = MentionSerilizer
+
+
+class AddReaction(generics.CreateAPIView):
+
+    permission_classes = [IsAuthenticated]
+    serializer_class = ReactionSerializer

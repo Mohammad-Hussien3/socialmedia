@@ -81,9 +81,9 @@ class UnfollowUser(APIView):
 
     permission_classes = [IsAuthenticated]
 
-    def post(self, request, userId, userNotToFollowId):
+    def post(self, request, userId, userToUnfollowId):
         userProfile = get_object_or_404(Profile, user__id=userId)
-        userToFollow = get_object_or_404(Profile, user__id=userNotToFollowId)
+        userToFollow = get_object_or_404(Profile, user__id=userToUnfollowId)
         userToFollow.followers.remove(userProfile)
         userToFollow.save()
         return Response({'message':'success'})
