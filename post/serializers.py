@@ -27,5 +27,5 @@ class ReactionSerializer(serializers.ModelSerializer):
 
 class NotificationSerializer(serializers.ModelSerializer):
     class Meta:
-        model = Reaction
+        model = Notification
         fields = ['id', 'sender', 'receive', 'createdAt', 'content', 'isRead']
