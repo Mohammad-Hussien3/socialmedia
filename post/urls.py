@@ -8,6 +8,8 @@ urlpatterns = [
 
     # Comments
     path('addcomment/', views.AddComment.as_view(), name='addComment'),
+    path('getmycomments/<int:id>/', views.GetMyComments.as_view(), name='getMyComments'),
+    path('getpostcomments/<int:postId>/', views.GetPostCommetns.as_view(), name='getPostComments'),
 
     # Mentions
     path('mention/', views.CreateMention.as_view(), name='createMention'),

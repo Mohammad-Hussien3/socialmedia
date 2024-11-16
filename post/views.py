@@ -1,6 +1,6 @@
 from rest_framework import generics
 from rest_framework.views import Response, status, APIView
-from .models import Notification, Post
+from .models import Notification, Post, Comment
 from .serializers import PostSerializer, CommentSerializer, MentionSerilizer, ReactionSerializer, NotificationSerializer
 from rest_framework.permissions import IsAuthenticated
 from django.shortcuts import get_object_or_404
@@ -50,6 +50,30 @@ class AddComment(generics.CreateAPIView):
     permission_classes = [IsAuthenticated]
     serializer_class = CommentSerializer
 
+
+class GetMyComments(generics.ListAPIView):
+
+    permission_classes = [IsAuthenticated]
+    serializer_class = CommentSerializer
+    pagination_class = CustomPageNumberPagination
+
+    def get_queryset(self):
+        profileId = self.kwargs.get('id')
+        comments = Comment.objects.filter(profile__id=profileId)
+        return comments
+
+
+class GetPostCommetns(generics.ListAPIView):
+
+    permission_classes = [IsAuthenticated]
+    serializer_class = CommentSerializer
+    pagination_class = CustomPageNumberPagination
+
+    def get_queryset(self):
+        postId = self.kwargs.get('postId')
+        comments = Comment.objects.filter(post__id=postId)
+        return comments
+    
 
 # Mentions
 class CreateMention(generics.CreateAPIView):
