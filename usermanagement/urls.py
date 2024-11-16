@@ -10,4 +10,6 @@ urlpatterns = [
     path('getusers/', views.GetUsers().as_view(), name='getUsers'),
     path('follow/<int:userId>/<int:userToFollowId>/', views.FollowUser.as_view(), name='followUser'),
     path('unfollow/<int:userId>/<int:userToUnfollowId>/', views.UnfollowUser.as_view(), name='unfollowUser'),
+    path('getfollowers/<int:profileId>/', views.GetFollowers.as_view(), name='getFollowers'),
+    path('getfollowing/<int:profileId>/', views.GetFollowing.as_view(), name='getFollowing'),
 ]

@@ -1,7 +1,7 @@
 from rest_framework import generics
 from rest_framework.views import APIView
 from django.shortcuts import get_object_or_404
-from .serializers import UserSerializer, ProfileSerializer
+from .serializers import UserSerializer, ProfileSerializer, FollowSerializer
 from .models import Profile
 from django.contrib.auth.models import User
 from rest_framework.permissions import AllowAny, IsAuthenticated, IsAdminUser
@@ -95,3 +95,29 @@ class UnfollowUser(APIView):
         userToFollow.followers.remove(userProfile)
         userToFollow.save()
         return Response({'message':'success'})
+    
+
+class GetFollowers(APIView):
+
+    permission_classes = [IsAuthenticated]
+    pagination_class = CustomPageNumberPagination
+
+
+    def get(self, request, profileId):
+        profile = Profile.objects.get(id=profileId)
+        followers = profile.followers.all()
+        jsonFollowers = FollowSerializer(followers, many=True).data
+        return Response(jsonFollowers, status=status.HTTP_200_OK)
+    
+
+class GetFollowing(APIView):
+
+    permission_classes = [IsAuthenticated]
+    pagination_class = CustomPageNumberPagination
+
+
+    def get(self, request, profileId):
+        profile = Profile.objects.get(id=profileId)
+        following = profile.following.all()
+        jsonFollowing = FollowSerializer(following, many=True).data
+        return Response(jsonFollowing, status=status.HTTP_200_OK)
