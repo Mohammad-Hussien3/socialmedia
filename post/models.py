@@ -14,8 +14,9 @@ class Post(models.Model):
     
 class Comment(models.Model):
     content = models.CharField(max_length=200)
-    createdAt = models.DateTimeField(auto_now_add=True)
+    uploadedAt = models.DateTimeField(auto_now_add=True)
     post = models.ForeignKey(Post, on_delete=models.CASCADE, related_name='comments')
+    profile = models.ForeignKey(Profile, on_delete=models.CASCADE, related_name='comments', null=True)
 
     def __str__(self):
         return f'{self.content} {self.id}'
@@ -51,3 +52,17 @@ class Reaction(models.Model):
 
     def __str__(self):
         return f'{self.profile.user.username} postId:{self.post.id} reactionId:{self.id}'
+    
+
+class Notification(models.Model):
+    sender = models.ForeignKey(Profile, on_delete=models.CASCADE, null=True, related_name='sent_notifications')
+    receive = models.ForeignKey(Profile, on_delete=models.CASCADE, related_name='received_notifications')
+    content = models.CharField(max_length=100)
+    createdAt = models.DateTimeField(auto_now_add=True)
+    isRead = models.BooleanField(default=False)
+
+    def __str__(self):
+        return f'Notification from {self.sender} to {self.receive}'
+    
+    class Meta:
+        ordering = ['-createdAt']
