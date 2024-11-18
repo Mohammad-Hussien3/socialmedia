@@ -5,6 +5,7 @@ urlpatterns = [
     # Posts
     path('addpost/', views.AddPost.as_view(), name='addPost'),
     path('getmyposts/<int:id>/', views.GetMyPosts.as_view(), name='getMyPosts'),
+    path('trendingposts/<int:id>/', views.TrendingPosts.as_view(), name='trendingPosts'),
 
     # Comments
     path('addcomment/', views.AddComment.as_view(), name='addComment'),
@@ -20,4 +21,8 @@ urlpatterns = [
     # Notifications
     path('marknotificationastrue/<int:id>/', views.MarkNotificationAsRead.as_view(), name='markNotificationAsTrue'),
     path('getmynotifications/<int:id>/', views.GetMyNotifications.as_view(), name='getMyNotifications'),
+    path('getnotification/<int:id>/', views.GetNotification.as_view(), name='getOneNotification'),
+
+    # Story
+    path('addstory/', views.AddStory.as_view(), name='addStory'),
 ]

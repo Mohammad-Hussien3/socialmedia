@@ -1,10 +1,11 @@
 from rest_framework import generics
 from rest_framework.views import Response, status, APIView
 from .models import Notification, Post, Comment
-from .serializers import PostSerializer, CommentSerializer, MentionSerilizer, ReactionSerializer, NotificationSerializer
+from .serializers import PostSerializer, CommentSerializer, MentionSerilizer, ReactionSerializer, NotificationSerializer, StorySerializer
 from rest_framework.permissions import IsAuthenticated
 from django.shortcuts import get_object_or_404
 from rest_framework.pagination import PageNumberPagination
+from usermanagement.models import Profile
 
 # Create your views here.
 
@@ -42,6 +43,19 @@ class GetMyPosts(generics.ListAPIView):
         profileId = self.kwargs.get('id')
         posts = Post.objects.filter(profile__id=profileId)
         return posts
+    
+
+class TrendingPosts(APIView):
+
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request, id):
+        profile = Profile.objects.get(user__id=id)
+        following = profile.following.all()
+        posts = Post.objects.filter(profile__in=following)
+        posts = sorted(posts, key=lambda x: len(x.reactions.all()), reverse=True)
+        jsonPosts = PostSerializer(posts, many=True).data
+        return Response(jsonPosts, status=status.HTTP_200_OK)
 
 
 # Comments
@@ -110,3 +124,19 @@ class GetMyNotifications(generics.ListAPIView):
     def get_queryset(self):
         profileId = self.kwargs.get('id')
         return Notification.objects.filter(receive__id=profileId)
+
+
+class GetNotification(generics.RetrieveAPIView):
+
+    permission_classes = [IsAuthenticated]
+    queryset = Notification.objects.all()
+    serializer_class = NotificationSerializer
+    lookup_field = 'id'
+
+
+# Stroy
+
+class AddStory(generics.CreateAPIView):
+
+    permission_classes = [IsAuthenticated]
+    serializer_class = StorySerializer
