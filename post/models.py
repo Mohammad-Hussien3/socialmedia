@@ -11,6 +11,9 @@ class Post(models.Model):
     def __str__(self):
         return f'{self.content} {self.id}'
     
+    class Meta:
+        ordering = ['-uploadedAt']
+    
     
 class Comment(models.Model):
     content = models.CharField(max_length=200)
@@ -20,6 +23,9 @@ class Comment(models.Model):
 
     def __str__(self):
         return f'{self.content} {self.id}'
+    
+    class Meta:
+        ordering = ['-uploadedAt']
     
 
 class Mention(models.Model):
@@ -53,6 +59,9 @@ class Reaction(models.Model):
     def __str__(self):
         return f'{self.profile.user.username} postId:{self.post.id} reactionId:{self.id}'
     
+    class Meta:
+        ordering = ['-createdAt']
+    
 
 class Notification(models.Model):
     sender = models.ForeignKey(Profile, on_delete=models.CASCADE, null=True, related_name='sent_notifications')
@@ -75,3 +84,6 @@ class Story(models.Model):
 
     def __str__(self):
         return f'{self.content} time: {self.createdAt}'
+    
+    class Meta:
+        ordering = ['-createdAt']

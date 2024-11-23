@@ -1,11 +1,12 @@
 from rest_framework import generics
 from rest_framework.views import Response, status, APIView
-from .models import Notification, Post, Comment
+from .models import Notification, Post, Comment, Story
 from .serializers import PostSerializer, CommentSerializer, MentionSerilizer, ReactionSerializer, NotificationSerializer, StorySerializer
 from rest_framework.permissions import IsAuthenticated
 from django.shortcuts import get_object_or_404
 from rest_framework.pagination import PageNumberPagination
 from usermanagement.models import Profile
+from .tasks import delete_story_after_24_hours
 
 # Create your views here.
 
@@ -136,7 +137,16 @@ class GetNotification(generics.RetrieveAPIView):
 
 # Stroy
 
-class AddStory(generics.CreateAPIView):
+class AddStory(APIView):
 
     permission_classes = [IsAuthenticated]
-    serializer_class = StorySerializer
+
+    def post(self, request):
+        data = request.data
+        profile = Profile.objects.get(id=data.get('id'))
+        content = data.get('content')
+        newStory = Story.objects.create(profile=profile, content=content)
+        newStory.save()
+        delete_story_after_24_hours.apply_async((newStory.id,), countdown=60 * 60 * 24)
+        return Response({'message':'success'}, status=status.HTTP_200_OK)
+        

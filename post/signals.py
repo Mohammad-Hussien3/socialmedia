@@ -23,7 +23,7 @@ def create_comment_notification(sender, instance, created, **kwargs):
 
 
 @receiver(post_save, sender=Mention)
-def create_metion_notification(sender, instance, created, **kwargs):
+def create_mention_notification(sender, instance, created, **kwargs):
     if created:
         Notification.objects.create(
             sender=instance.profile,
