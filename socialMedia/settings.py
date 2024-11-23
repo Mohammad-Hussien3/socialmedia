@@ -43,6 +43,7 @@ INSTALLED_APPS = [
     'rest_framework',
     'rest_framework_simplejwt',
     'corsheaders',
+    'django_celery_results',
     'usermanagement',
     'post',
 ]
@@ -65,11 +66,20 @@ REST_FRAMEWORK = {
 }
 
 SIMPLE_JWT = {
-    'ACCESS_TOKEN_LIFETIME': timedelta(minutes=1),
+    'ACCESS_TOKEN_LIFETIME': timedelta(minutes=10),
     'REFRESH_TOKEN_LIFETIME': timedelta(days=90),
 }
 
 CORS_ALLOW_ALL_ORIGINS = True
+
+# Redis as broker
+CELERY_BROKER_URL = 'redis://localhost:6379/0'
+
+# Store results in Django's database
+CELERY_RESULT_BACKEND = 'django-db'
+
+CELERY_BROKER_CONNECTION_RETRY_ON_STARTUP = True
+
 
 ROOT_URLCONF = 'socialMedia.urls'
 
