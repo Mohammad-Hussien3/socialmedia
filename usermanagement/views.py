@@ -24,6 +24,12 @@ def error_keys(expected_keys, received_keys):
             )
 
 
+class CustomPageNumberPagination(PageNumberPagination):
+    page_size = 5
+    page_size_query_param = 'page_size'
+    max_page_size = 10
+
+
 class TokenRefreshView(TokenRefreshView):
     serializer_class = TokenRefreshSerializer
 
@@ -58,12 +64,6 @@ class LogIn(APIView):
             return Response({'token': str(token.access_token), 'refresh': str(token)}, status=status.HTTP_200_OK)
         
         return Response({"message": "Invalid credentials"}, status=status.HTTP_401_UNAUTHORIZED)
-    
-
-class CustomPageNumberPagination(PageNumberPagination):
-    page_size = 5
-    page_size_query_param = 'page_size'
-    max_page_size = 10
 
 
 class GetUsers(generics.ListAPIView):
@@ -123,11 +123,20 @@ class GetFollowing(APIView):
         return Response(jsonFollowing, status=status.HTTP_200_OK)
 
 
-class FindProfile(APIView):
+class FindProfile(generics.RetrieveAPIView):
 
     permission_classes = [IsAuthenticated]
-    
-    def get(self, request, username):
-        profile = get_object_or_404(Profile, user__username=username)
-        JsonProfile = PersonalPageSerializer(profile).data
-        return Response(JsonProfile, status=status.HTTP_200_OK)
+    serializer_class = PersonalPageSerializer
+    lookup_field = 'username'
+
+    def get_object(self):
+        username = self.kwargs.get(self.lookup_field)
+        return Profile.objects.get(user__username=username)
+
+
+class HomePage(generics.RetrieveAPIView):
+
+    permission_classes = [IsAuthenticated]
+    serializer_class = ProfileSerializer
+    lookup_field = 'id'
+    queryset = Profile.objects.all()
