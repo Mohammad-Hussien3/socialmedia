@@ -1,6 +1,7 @@
 from rest_framework import serializers
 from django.contrib.auth.models import User
 from .models import Profile
+from post.serializers import PostSerializer
 
 class UserSerializer(serializers.ModelSerializer):
     class Meta:
@@ -16,12 +17,15 @@ class UserSerializer(serializers.ModelSerializer):
     
 
 class ProfileSerializer(serializers.ModelSerializer):
+    posts = PostSerializer(many=True)
     class Meta:
         model = Profile
-        fields = ['id', 'user', 'bio', 'profile_image', 'followers', 'following']
+        fields = ['id', 'user', 'bio', 'profile_image', 'followers', 'following', 'posts']
 
 
 class PersonalPageSerializer(serializers.ModelSerializer):
+    posts = PostSerializer(many=True)
+
     class Meta:
         model = Profile
-        fields = ['id', 'bio', 'profile_image']
+        fields = ['id', 'bio', 'profile_image', 'posts']
