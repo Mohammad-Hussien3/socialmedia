@@ -1,6 +1,6 @@
 from rest_framework import generics
 from rest_framework.views import Response, status, APIView
-from .models import Notification, Post, Comment, Story
+from .models import Notification, Post, Comment, Story, Reaction
 from .serializers import PostSerializer, CommentSerializer, MentionSerilizer, ReactionSerializer, NotificationSerializer, StorySerializer
 from rest_framework.permissions import IsAuthenticated
 from django.shortcuts import get_object_or_404
@@ -32,6 +32,13 @@ class AddPost(generics.CreateAPIView):
     
     permission_classes = [IsAuthenticated]
     serializer_class = PostSerializer
+
+
+class DeletePost(generics.DestroyAPIView):
+
+    permission_classes = [IsAuthenticated]
+    queryset = Post.objects.all()
+    lookup_field = 'id'
 
 
 class GetMyPosts(generics.ListAPIView):
@@ -90,6 +97,13 @@ class GetPostCommetns(generics.ListAPIView):
         return comments
     
 
+class DeleteComment(generics.DestroyAPIView):
+
+    permission_classes = [IsAuthenticated]
+    queryset = Comment.objects.all()
+    lookup_field = 'id'
+    
+
 # Mentions
 class CreateMention(generics.CreateAPIView):
 
@@ -103,6 +117,36 @@ class AddReaction(generics.CreateAPIView):
     permission_classes = [IsAuthenticated]
     serializer_class = ReactionSerializer
 
+
+class DeleteReactions(generics.DestroyAPIView):
+
+    permission_classes = [IsAuthenticated]
+    queryset = Reaction.objects.all()
+    lookup_field = 'id'
+
+
+class GetMyReations(generics.ListAPIView):
+
+    permission_classes = [IsAuthenticated]
+    serializer_class = ReactionSerializer
+    pagination_class = CustomPageNumberPagination
+
+    def get_queryset(self):
+        id = self.kwargs.get('id')
+        reactions = Reaction.objects.filter(profile__id=id)
+        return reactions
+    
+
+class GetPostReactions(generics.ListAPIView):
+
+    permission_classes = [IsAuthenticated]
+    serializer_class = ReactionSerializer
+    pagination_class = CustomPageNumberPagination
+
+    def get_queryset(self):
+        postId = self.kwargs.get('postId')
+        reactions = Reaction.objects.filter(post__id=postId)
+        return reactions
 
 # Notifications
 class MarkNotificationAsRead(APIView):
@@ -135,8 +179,7 @@ class GetNotification(generics.RetrieveAPIView):
     lookup_field = 'id'
 
 
-# Stroy
-
+# Stroies
 class AddStory(APIView):
 
     permission_classes = [IsAuthenticated]
@@ -149,4 +192,23 @@ class AddStory(APIView):
         newStory.save()
         delete_story_after_24_hours.apply_async((newStory.id,), countdown=60 * 60 * 24)
         return Response({'message':'success'}, status=status.HTTP_200_OK)
+    
+
+class GetMyStories(generics.ListAPIView):
+
+    permission_classes = [IsAuthenticated]
+    serializer_class = StorySerializer
+    pagination_class = CustomPageNumberPagination
+    
+    def get_queryset(self):
+        profile = Profile.objects.get(id=self.kwargs.get('id'))
+        return profile.stories.all()
+    
+
+class GetStory(generics.RetrieveAPIView):
+
+    permission_classes = [IsAuthenticated]
+    serializer_class = StorySerializer
+    queryset = Story.objects.all()
+    lookup_field = 'id'
         

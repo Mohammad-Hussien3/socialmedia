@@ -38,14 +38,19 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    "django.contrib.sites",
 
     # apps
     'rest_framework',
     'rest_framework_simplejwt',
     'corsheaders',
     'django_celery_results',
+    "allauth",
+    "allauth.account",
+    'channels',
     'usermanagement',
     'post',
+    'chat'
 ]
 
 MIDDLEWARE = [
@@ -56,8 +61,20 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'allauth.account.middleware.AccountMiddleware',
     'corsheaders.middleware.CorsMiddleware',
 ]
+
+
+LOGIN_REDIRECT_URL = "http://0.0.0.0:8000/"
+ACCOUNT_LOGOUT_REDIRECT = "http://0.0.0.0:8000/"
+SITE_ID = 1
+AUTHENTICATION_BACKENDS = (
+    "django.contrib.auth.backends.ModelBackend",
+    "allauth.account.auth_backends.AuthenticationBackend",
+)
+EMAIL_BACKEND = "django.core.mail.backends.console.EmailBackend"
+
 
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': (
@@ -98,6 +115,14 @@ TEMPLATES = [
         },
     },
 ]
+
+ASGI_APPLICATION = 'socialMedia.asgi.application'
+
+CHANNEL_LAYERS = {
+    'default': {
+        'BACKEND': 'channels.layers.InMemoryChannelLayer',
+    },
+}
 
 WSGI_APPLICATION = 'socialMedia.wsgi.application'
 

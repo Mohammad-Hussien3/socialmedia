@@ -78,7 +78,7 @@ class Notification(models.Model):
 
 
 class Story(models.Model):
-    profile = models.ForeignKey(Profile, on_delete=models.CASCADE)
+    profile = models.ForeignKey(Profile, on_delete=models.CASCADE, related_name='stories')
     content = models.CharField(max_length=200)
     createdAt = models.DateTimeField(auto_now_add=True)
 

@@ -4,3 +4,5 @@ usermanagement/migrations/__pycache__/
 db.sqlite3
 post/__pycache__/
 post/migrations/__pycache__/
+chat/__pycache__/
+chat/migrations/__pycache__/
