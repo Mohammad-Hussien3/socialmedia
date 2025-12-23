@@ -89,6 +89,10 @@ SIMPLE_JWT = {
 
 CORS_ALLOW_ALL_ORIGINS = True
 
+CSRF_TRUSTED_ORIGINS = [
+    'https://gleaming-jacquelynn-botmarket-0eb9256d.koyeb.app',
+]
+
 # Redis as broker
 CELERY_BROKER_URL = 'redis://localhost:6379/0'
 
